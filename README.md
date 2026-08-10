@@ -47,18 +47,34 @@ python3 construal_ekg2.py --file a.txt --overlay b.txt out.png   # compare two t
 python3 construal_ekg2.py --demo                                 # polysemy divergence test
 ```
 
+## Breath lead (`breath.py`)
+
+A second lead, purely mechanical: syllable load between breath points.
+Punctuation descends from delivery notation (komma, kolon, periodos were
+units of breath before they were marks), so it is read back as breath
+structure — load climbs syllable by syllable (CMU pronouncing dictionary,
+vowel-cluster fallback) and punctuation vents it: a comma partially, a
+period completely. The trace is a sawtooth: "syllables since the speaker
+last breathed."
+
+```sh
+python3 breath.py --file speech.txt      # breath groups + peak load
+```
+
 ## Interactive viewer (`ekg_view.py`)
 
-Emits a single self-contained HTML file: the trace strip on top, the full
-text below, linked both ways. Hover a word to light it up on the waveform,
-hover the trace to highlight the word, click either to jump the other into
-view. Words are tinted by abstractness (terracotta = concrete, blue =
-abstract); function words stay plain. See `gettysburg.html` for a sample.
+Emits a single self-contained HTML file: stacked trace strips (abstractness
+wave + breath sawtooth, scroll- and crosshair-synced) over the full text,
+linked both ways. Hover a word to light it up on every lead, hover a trace
+to highlight the word, click either to jump the other into view. Words are
+tinted by abstractness (terracotta = concrete, blue = abstract); function
+words stay plain. See `gettysburg.html` for a sample.
 
 ```sh
 python3 ekg_view.py "Your sentence here." out.html
 python3 ekg_view.py --file speech.txt out.html
 python3 ekg_view.py --file speech.txt --scorer v1 out.html   # dictionary scorer
+python3 ekg_view.py --file speech.txt --no-breath out.html   # abstractness only
 ```
 
 ## Phrase gallery (`gallery.py`)

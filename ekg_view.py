@@ -2,25 +2,30 @@
 """
 ekg_view.py — interactive HTML viewer for construal EKG traces.
 
-Emits a single self-contained HTML file: the trace strip on top, the full
-text below, linked both ways. Hover a word to light up its position on the
-waveform; hover the trace to highlight the word; click either to jump the
+Emits a single self-contained HTML file: the trace strips on top, the full
+text below, linked both ways. Hover a word to light up its position on
+every lead; hover a trace to highlight the word; click either to jump the
 other into view. Words are tinted by abstractness (terracotta = concrete,
 blue = abstract, neutral = mid); function words are plain ink.
 
-The payload is structured as a list of leads so future indicators (image
-schemas etc.) can stack as extra strips without a redesign.
+Two leads:
+  abstractness — the construal wave (v1 dictionary or v2 contextual probe)
+  breath       — syllable load between breath points (see breath.py), a
+                 sawtooth: load climbs word by word, punctuation vents it
 
 Usage:
     python3 ekg_view.py "Your sentence here." out.html
     python3 ekg_view.py --file speech.txt out.html
     python3 ekg_view.py --file speech.txt --scorer v1 out.html
+    python3 ekg_view.py --file speech.txt --no-breath out.html
 """
 
 import argparse
 import json
+import math
 import re
 
+from breath import breath_lead
 from construal_ekg import WORD_RE_PATTERN, load_norms, score_text, waveform
 
 WORD_RE = re.compile(WORD_RE_PATTERN)
@@ -40,20 +45,30 @@ def segment(text, scored):
     return out, text[prev_end:]
 
 
-def build_payload(text, scored, title, scorer_name):
+def build_payload(text, scored, title, scorer_name, with_breath=True):
     tokens, tail = segment(text, scored)
     _, _, smooth = waveform(scored)
     content = [t for t in tokens if t["c"]]
     hit = [t for t in content if t["s"] is not None]
     mean = sum(t["s"] for t in hit) / max(len(hit), 1)
+
+    leads = [{"name": "abstractness", "kind": "wave",
+              "lo": "concrete", "hi": "abstract", "min": 1, "max": 5,
+              "smooth": [round(float(v), 3) for v in smooth]}]
+    if with_breath:
+        loads, marks = breath_lead(text)
+        assert len(loads) == len(tokens), "breath tokenizer drift"
+        leads.append({"name": "breath", "kind": "saw",
+                      "unit": "syllables since breath", "min": 0,
+                      "max": max(5, math.ceil(max(loads) / 5) * 5),
+                      "values": loads, "marks": marks})
+
     return {
         "title": title,
         "scorer": scorer_name,
         "stats": {"tokens": len(tokens), "content": len(content),
                   "scored": len(hit), "mean": round(mean, 2)},
-        "leads": [{"name": "abstractness",
-                   "lo": "concrete", "hi": "abstract",
-                   "smooth": [round(float(v), 3) for v in smooth]}],
+        "leads": leads,
         "tokens": tokens,
         "tail": tail,
     }
@@ -83,21 +98,23 @@ TEMPLATE = """<!DOCTYPE html>
        margin: 0 0 4px; overflow-wrap: anywhere; }
   .meta { font: 12px/1.5 ui-monospace, Menlo, monospace; color: var(--ink-2); }
   .meta b { color: var(--ink); font-weight: 600; }
+  .lead-cap { font: 600 11px/1.4 ui-monospace, Menlo, monospace;
+              color: var(--ink-2); text-transform: uppercase;
+              letter-spacing: 0.05em; margin: 16px 0 4px; }
   .strip-wrap {
-    margin: 18px 0 6px; background: var(--paper);
-    border: 1px solid var(--grid-major); border-radius: 6px;
-    overflow-x: auto; position: relative;
+    background: var(--paper); border: 1px solid var(--grid-major);
+    border-radius: 6px; overflow-x: auto; position: relative;
   }
   .strip-wrap svg { display: block; }
-  #tip {
+  .tip {
     position: absolute; pointer-events: none; display: none; z-index: 3;
     background: var(--ink); color: var(--paper); border-radius: 4px;
     padding: 3px 8px; font: 12px/1.5 ui-monospace, Menlo, monospace;
-    white-space: nowrap; transform: translate(-50%, -130%);
+    white-space: nowrap;
   }
-  #tip .val { font-weight: 700; }
+  .tip .val { font-weight: 700; }
   .legend { font: 12px/1.6 ui-monospace, Menlo, monospace; color: var(--ink-2);
-            margin-bottom: 22px; }
+            margin: 14px 0 22px; }
   .legend .sw { display: inline-block; width: 10px; height: 10px;
                 border-radius: 2px; margin: 0 4px 0 12px; vertical-align: -1px; }
   #text {
@@ -125,26 +142,26 @@ TEMPLATE = """<!DOCTYPE html>
   <div class="meta" id="meta"></div>
 </header>
 <main>
-  <div class="strip-wrap" id="strip"><div id="tip"></div></div>
+  <div id="strips"></div>
   <div class="legend">word tint:
     <span class="sw" style="background:#f2c4b8"></span>concrete (1)
     <span class="sw" style="background:#e9e4de"></span>mid (3)
     <span class="sw" style="background:#bcd3ec"></span>abstract (5)
     &nbsp;·&nbsp; dotted underline = unscored &nbsp;·&nbsp; gray = function word
+    &nbsp;·&nbsp; breath ticks = punctuation vents
   </div>
   <div id="text"></div>
   <details><summary>data table</summary><table id="table"></table></details>
 </main>
 <script>
 const D = JSON.parse(document.getElementById('payload').textContent);
-const lead = D.leads[0];
 const N = D.tokens.length;
 
 document.getElementById('title').textContent = D.title;
 document.getElementById('meta').innerHTML =
-  `lead: <b>${lead.name}</b> (1 ${lead.lo} — 5 ${lead.hi}) · scorer: <b>${D.scorer}</b>` +
+  `leads: <b>${D.leads.map(l => l.name).join(' · ')}</b> · scorer: <b>${D.scorer}</b>` +
   ` · tokens: <b>${D.stats.tokens}</b> · content scored: <b>${D.stats.scored}/${D.stats.content}</b>` +
-  ` · mean: <b>${D.stats.mean}</b>`;
+  ` · mean abstractness: <b>${D.stats.mean}</b>`;
 
 // ---- color: diverging around 3, validated poles ----
 const POLES = { strong: ['#b5432e', '#8a857e', '#3a6ea5'],
@@ -160,41 +177,99 @@ function colorFor(s, kind){
   return t < 0 ? mix(mid, lo, -t) : mix(mid, hi, t);
 }
 
-// ---- strip geometry ----
-const PX = 14, ML = 48, MR = 16, MT = 14, MB = 26, PH = 200;
-const W = ML + N * PX + MR, H = MT + PH + MB;
+// ---- strips ----
+const PX = 14, ML = 48, MR = 16, MT = 14, MB = 26;
+const W = ML + N * PX + MR;
 const X = i => ML + (i + 0.5) * PX;
-const Y = s => MT + (5 - s) / 4 * PH;
+const strips = [];
+const stripsHost = document.getElementById('strips');
 
-const S = [];
-S.push(`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="ui-monospace,Menlo,monospace">`);
-for (let s = 1; s <= 5; s += 0.5) {
-  const major = Number.isInteger(s);
-  S.push(`<line x1="${ML}" x2="${W-MR}" y1="${Y(s)}" y2="${Y(s)}"
-    stroke="${major ? 'var(--grid-major)' : 'var(--grid-minor)'}" stroke-width="${major ? 0.8 : 0.5}"/>`);
-  if (major) S.push(`<text x="${ML-8}" y="${Y(s)+4}" text-anchor="end" font-size="11" fill="var(--ink-2)">${s}</text>`);
+function makeStrip(lead) {
+  const PH = lead.kind === 'wave' ? 200 : 120;
+  const H = MT + PH + MB;
+  const Y = v => MT + (lead.max - v) / (lead.max - lead.min) * PH;
+  const S = [];
+  S.push(`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="ui-monospace,Menlo,monospace">`);
+
+  const step = lead.kind === 'wave' ? 0.5 : (lead.max > 20 ? 10 : 5);
+  for (let v = lead.min; v <= lead.max + 1e-9; v += step) {
+    const major = lead.kind === 'wave' ? Number.isInteger(v) : true;
+    S.push(`<line x1="${ML}" x2="${W-MR}" y1="${Y(v)}" y2="${Y(v)}"
+      stroke="${major ? 'var(--grid-major)' : 'var(--grid-minor)'}" stroke-width="${major ? 0.8 : 0.5}"/>`);
+    if (major) S.push(`<text x="${ML-8}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--ink-2)">${v}</text>`);
+  }
+  for (let i = 0; i < N; i += 5) {
+    const major = i % 25 === 0;
+    S.push(`<line x1="${X(i)}" x2="${X(i)}" y1="${MT}" y2="${MT+PH}"
+      stroke="${major ? 'var(--grid-major)' : 'var(--grid-minor)'}" stroke-width="${major ? 0.8 : 0.5}"/>`);
+    if (major) S.push(`<text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--ink-2)">${i}</text>`);
+  }
+
+  if (lead.kind === 'wave') {
+    S.push(`<line x1="${ML}" x2="${W-MR}" y1="${Y(3)}" y2="${Y(3)}" stroke="var(--neutral)"
+      stroke-width="0.8" stroke-dasharray="5 4" opacity="0.7"/>`);
+    S.push(`<path d="${lead.smooth.map((v,i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join('')}"
+      fill="none" stroke="var(--trace)" stroke-width="2" stroke-linejoin="round"/>`);
+    D.tokens.forEach((tk, i) => {
+      if (tk.s === null) return;
+      S.push(`<circle class="dot" data-i="${i}" cx="${X(i)}" cy="${Y(tk.s)}" r="3.2"
+        fill="${colorFor(tk.s, 'strong')}" stroke="var(--paper)" stroke-width="1"/>`);
+    });
+  } else {
+    // sawtooth: ramp through word loads, near-vertical drop at each vent
+    const vents = {};
+    lead.marks.forEach(m => { vents[m.after] = m; });
+    let d = '';
+    lead.values.forEach((v, i) => {
+      d += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1);
+      const m = vents[i];
+      if (m) d += 'L' + (X(i) + PX * 0.45).toFixed(1) + ' ' + Y(m.to).toFixed(1);
+    });
+    S.push(`<path d="${d}" fill="none" stroke="var(--trace)" stroke-width="1.6" stroke-linejoin="round"/>`);
+    lead.marks.forEach(m => {
+      const x = X(m.after) + PX * 0.45;
+      S.push(`<line x1="${x}" x2="${x}" y1="${MT + PH}" y2="${MT + PH - 8 - 10 * m.strength}"
+        stroke="var(--concrete)" stroke-width="${m.strength >= 1 ? 2 : 1}" opacity="0.8"/>`);
+    });
+  }
+  S.push(`<line class="cross" y1="${MT}" y2="${MT+PH}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`);
+  S.push('</svg>');
+
+  const cap = document.createElement('div');
+  cap.className = 'lead-cap';
+  cap.textContent = lead.kind === 'wave'
+    ? `${lead.name} (${lead.min} ${lead.lo} — ${lead.max} ${lead.hi})`
+    : `${lead.name} (${lead.unit})`;
+  const wrap = document.createElement('div');
+  wrap.className = 'strip-wrap';
+  const tip = document.createElement('div');
+  tip.className = 'tip';
+  wrap.appendChild(tip);
+  wrap.insertAdjacentHTML('beforeend', S.join(''));
+  stripsHost.appendChild(cap);
+  stripsHost.appendChild(wrap);
+
+  const svg = wrap.querySelector('svg');
+  const strip = { lead, wrap, svg, tip, Y,
+                  cross: svg.querySelector('.cross'),
+                  valueAt: i => lead.kind === 'wave' ? D.tokens[i].s : lead.values[i] };
+  svg.addEventListener('mousemove', e => {
+    const i = Math.max(0, Math.min(N - 1,
+      Math.floor((e.clientX - svg.getBoundingClientRect().left - ML) / PX)));
+    light(i, false, false);
+  });
+  svg.addEventListener('mouseleave', unlight);
+  svg.addEventListener('click', e => {
+    const i = Math.max(0, Math.min(N - 1,
+      Math.floor((e.clientX - svg.getBoundingClientRect().left - ML) / PX)));
+    light(i, false, true);
+  });
+  wrap.addEventListener('scroll', () => {
+    strips.forEach(o => { if (o !== strip) o.wrap.scrollLeft = wrap.scrollLeft; });
+  });
+  return strip;
 }
-for (let i = 0; i < N; i += 5) {
-  const major = i % 25 === 0;
-  S.push(`<line x1="${X(i)}" x2="${X(i)}" y1="${MT}" y2="${MT+PH}"
-    stroke="${major ? 'var(--grid-major)' : 'var(--grid-minor)'}" stroke-width="${major ? 0.8 : 0.5}"/>`);
-  if (major) S.push(`<text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--ink-2)">${i}</text>`);
-}
-S.push(`<line x1="${ML}" x2="${W-MR}" y1="${Y(3)}" y2="${Y(3)}" stroke="var(--neutral)"
-  stroke-width="0.8" stroke-dasharray="5 4" opacity="0.7"/>`);
-S.push(`<path d="${lead.smooth.map((v,i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join('')}"
-  fill="none" stroke="var(--trace)" stroke-width="2" stroke-linejoin="round"/>`);
-D.tokens.forEach((tk, i) => {
-  if (tk.s === null) return;
-  S.push(`<circle id="dot${i}" cx="${X(i)}" cy="${Y(tk.s)}" r="3.2"
-    fill="${colorFor(tk.s, 'strong')}" stroke="var(--paper)" stroke-width="1"/>`);
-});
-S.push(`<line id="cross" y1="${MT}" y2="${MT+PH}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`);
-S.push('</svg>');
-const strip = document.getElementById('strip');
-strip.insertAdjacentHTML('beforeend', S.join(''));
-const svg = strip.querySelector('svg'), cross = document.getElementById('cross');
-const tip = document.getElementById('tip');
+D.leads.forEach(lead => strips.push(makeStrip(lead)));
 
 // ---- text panel ----
 const textEl = document.getElementById('text');
@@ -208,46 +283,41 @@ textEl.innerHTML = D.tokens.map((tk, i) => {
 }).join('') + D.tail;
 
 // ---- linking ----
-let hotWord = null, hotDot = null;
+let hotWord = null;
 function light(i, scrollTrace, scrollText) {
   if (hotWord) hotWord.classList.remove('hot');
-  if (hotDot) hotDot.setAttribute('r', 3.2);
   hotWord = document.getElementById('w' + i);
-  hotDot = document.getElementById('dot' + i);
   if (hotWord) hotWord.classList.add('hot');
-  if (hotDot) hotDot.setAttribute('r', 5.5);
-  cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i));
-  cross.setAttribute('visibility', 'visible');
   const tk = D.tokens[i];
-  tip.innerHTML = `${tk.t} · <span class="val">${tk.s === null ? (tk.c ? 'unscored' : 'function word') : tk.s.toFixed(2)}</span>`;
-  const ty = Y(tk.s ?? 3);
-  tip.style.left = X(i) + 'px';
-  tip.style.top = ty + 'px';
-  // flip below the point when too close to the top edge (the scroll
-  // container clips anything above it)
-  tip.style.transform = ty < 55 ? 'translate(-50%, 30%)' : 'translate(-50%, -130%)';
-  tip.style.display = 'block';
-  if (scrollTrace) strip.scrollTo({left: X(i) - strip.clientWidth / 2, behavior: 'smooth'});
+  strips.forEach(o => {
+    o.svg.querySelectorAll('.dot[r="5.5"]').forEach(d => d.setAttribute('r', 3.2));
+    const dot = o.svg.querySelector(`.dot[data-i="${i}"]`);
+    if (dot) dot.setAttribute('r', 5.5);
+    o.cross.setAttribute('x1', X(i)); o.cross.setAttribute('x2', X(i));
+    o.cross.setAttribute('visibility', 'visible');
+    const v = o.valueAt(i);
+    const label = o.lead.kind === 'wave'
+      ? (v === null ? (tk.c ? 'unscored' : 'function word') : v.toFixed(2))
+      : v + ' syl';
+    o.tip.innerHTML = `${tk.t} · <span class="val">${label}</span>`;
+    const ty = o.Y(o.lead.kind === 'wave' ? (v ?? 3) : v);
+    o.tip.style.left = X(i) + 'px';
+    o.tip.style.top = ty + 'px';
+    o.tip.style.transform = ty < 55 ? 'translate(-50%, 30%)' : 'translate(-50%, -130%)';
+    o.tip.style.display = 'block';
+    if (scrollTrace) o.wrap.scrollTo({left: X(i) - o.wrap.clientWidth / 2, behavior: 'smooth'});
+  });
   if (scrollText && hotWord) hotWord.scrollIntoView({block: 'nearest', behavior: 'smooth'});
 }
 function unlight() {
   if (hotWord) hotWord.classList.remove('hot');
-  if (hotDot) hotDot.setAttribute('r', 3.2);
-  hotWord = hotDot = null;
-  cross.setAttribute('visibility', 'hidden');
-  tip.style.display = 'none';
+  hotWord = null;
+  strips.forEach(o => {
+    o.svg.querySelectorAll('.dot[r="5.5"]').forEach(d => d.setAttribute('r', 3.2));
+    o.cross.setAttribute('visibility', 'hidden');
+    o.tip.style.display = 'none';
+  });
 }
-svg.addEventListener('mousemove', e => {
-  const i = Math.max(0, Math.min(N - 1,
-    Math.floor((e.clientX - svg.getBoundingClientRect().left - ML) / PX)));
-  light(i, false, false);
-});
-svg.addEventListener('mouseleave', unlight);
-svg.addEventListener('click', e => {
-  const i = Math.max(0, Math.min(N - 1,
-    Math.floor((e.clientX - svg.getBoundingClientRect().left - ML) / PX)));
-  light(i, false, true);
-});
 textEl.addEventListener('mouseover', e => {
   const w = e.target.closest('.w'); if (w) light(+w.dataset.i, false, false);
 });
@@ -257,10 +327,13 @@ textEl.addEventListener('click', e => {
 });
 
 // ---- data table ----
+const saw = D.leads.find(l => l.kind === 'saw');
 document.getElementById('table').innerHTML =
-  '<tr><th>#</th><th>token</th><th>abstractness</th></tr>' +
+  `<tr><th>#</th><th>token</th><th>abstractness</th>${saw ? '<th>breath</th>' : ''}</tr>` +
   D.tokens.map((tk, i) =>
-    `<tr><td>${i}</td><td>${tk.t}</td><td>${tk.s === null ? (tk.c ? '—' : 'fn') : tk.s.toFixed(2)}</td></tr>`
+    `<tr><td>${i}</td><td>${tk.t}</td>` +
+    `<td>${tk.s === null ? (tk.c ? '—' : 'fn') : tk.s.toFixed(2)}</td>` +
+    (saw ? `<td>${saw.values[i]}</td>` : '') + '</tr>'
   ).join('');
 </script>
 </body>
@@ -276,6 +349,8 @@ def main():
     ap.add_argument("--scorer", choices=["v1", "v2"], default="v2")
     ap.add_argument("--probe", default="probe.npz")
     ap.add_argument("--title", help="override the page title")
+    ap.add_argument("--no-breath", action="store_true",
+                    help="omit the breath lead")
     args = ap.parse_args()
 
     if args.file:
@@ -296,13 +371,15 @@ def main():
         scored = score_text(text, load_norms())
         scorer_name = "v1 dictionary (Brysbaert norms)"
 
-    payload = build_payload(text, scored, title, scorer_name)
+    payload = build_payload(text, scored, title, scorer_name,
+                            with_breath=not args.no_breath)
     page = (TEMPLATE
             .replace("__TITLE__", payload["title"].replace("<", "&lt;"))
             .replace("__PAYLOAD__", json.dumps(payload).replace("</", "<\\/")))
     with open(args.out, "w") as f:
         f.write(page)
-    print(f"tokens: {len(payload['tokens'])} | wrote {args.out}")
+    print(f"tokens: {len(payload['tokens'])} | leads: "
+          f"{', '.join(l['name'] for l in payload['leads'])} | wrote {args.out}")
 
 
 if __name__ == "__main__":
