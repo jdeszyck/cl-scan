@@ -6,6 +6,10 @@ Scores every token *in context* by projecting its contextual embedding
 through the probe trained by train_probe.py. Polysemy resolves: "hard
 problem" and "hard surface" diverge. Coverage is 100% of content words.
 
+The probe predicts Brysbaert concreteness (1=abstract .. 5=concrete);
+reported scores are inverted (6 - prediction) to the abstractness scale
+(1=concrete .. 5=abstract), matching construal_ekg.py.
+
 Function words remain the isoelectric line (unscored, interpolated) for
 comparability with v1.
 
@@ -64,7 +68,7 @@ class ContextualScorer:
             if start + window >= len(words):
                 break
         counts[counts == 0] = 1
-        return np.clip(scores / counts, 1.0, 5.0)
+        return 6.0 - np.clip(scores / counts, 1.0, 5.0)  # invert: abstractness
 
     def score_text(self, text):
         """Returns v1-compatible scored list: (token, score_or_None, is_content)."""
@@ -112,7 +116,7 @@ def overlay_render(scored_a, scored_b, labels, outpath):
     ax.axhline(3.0, color="#888", lw=0.8, ls="--", alpha=0.6)
     ax.set_ylim(0.8, 5.2)
     ax.set_xlabel("normalized position", fontsize=9)
-    ax.set_ylabel("concreteness\n(1 abstract — 5 concrete)", fontsize=9)
+    ax.set_ylabel("abstractness\n(1 concrete — 5 abstract)", fontsize=9)
     ax.legend(frameon=False, fontsize=9)
     fig.tight_layout()
     fig.savefig(outpath, bbox_inches="tight")

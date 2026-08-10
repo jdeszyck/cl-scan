@@ -1,10 +1,13 @@
 # cl-scan — a construal EKG
 
-Trace the concreteness/abstractness waveform of a text, word by word.
-Concreteness (1 = abstract … 5 = concrete) is the standard lexical proxy for
-construal level. Content words are the R-waves; function words are the
-isoelectric line — unscored and interpolated through. The trace is
-Gaussian-smoothed and rendered on an ECG-paper strip.
+Trace the abstractness waveform of a text, word by word. Lexical
+concreteness/abstractness is the standard proxy for construal level; scores
+are reported on an abstractness scale (1 = concrete … 5 = abstract), so
+higher means more abstract. (The underlying Brysbaert norms rate
+concreteness 1–5; scorers invert with 6 − rating at the reporting boundary.)
+Content words are the R-waves; function words are the isoelectric line —
+unscored and interpolated through. The trace is Gaussian-smoothed and
+rendered on an ECG-paper strip.
 
 ## Setup
 
@@ -33,8 +36,8 @@ python3 construal_ekg.py --file speech.txt out.png
 ## v2 — contextual scorer (`construal_ekg2.py`)
 
 Scores every token *in context* by projecting its contextual embedding through
-a linear probe. Polysemy resolves ("hard problem" ≈ 2.0 vs. "hard surface" ≈
-3.5) and coverage is 100% of content words. Requires `probe.npz` (committed;
+a linear probe. Polysemy resolves ("hard problem" ≈ 4.0 vs. "hard surface" ≈
+2.5 abstractness) and coverage is 100% of content words. Requires `probe.npz` (committed;
 retrain with `train_probe.py`).
 
 ```sh

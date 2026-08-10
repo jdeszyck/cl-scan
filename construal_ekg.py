@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-construal_ekg.py — trace the concreteness/abstraction waveform of a text.
+construal_ekg.py — trace the abstractness waveform of a text.
 
-Lead I of the construal EKG: lexical concreteness (Brysbaert et al. 2014,
-~40k human-rated lemmas, scale 1=abstract .. 5=concrete).
+Lead I of the construal EKG: lexical abstractness, from the Brysbaert et al.
+2014 concreteness norms (~40k human-rated lemmas). Norms are rated
+1=abstract .. 5=concrete; we report the inverted scale (6 - rating), so
+1=concrete .. 5=abstract — higher means more abstract.
 
 Content words are the R-waves; function words are the isoelectric line
 (interpolated through, not scored).
@@ -81,7 +83,7 @@ def score_text(text, norms):
         score = None
         for cand in lemma_candidates(w):
             if cand in norms:
-                score = norms[cand]
+                score = 6.0 - norms[cand]   # invert: report abstractness
                 break
         out.append((tok, score, True))
     return out
@@ -131,7 +133,7 @@ def render(scored, title, outpath, label_all_words=False, annotate_n=8):
 
     ax.set_ylim(0.8, 5.2)
     ax.set_xlim(-1, n)
-    ax.set_ylabel("concreteness\n(1 abstract — 5 concrete)", fontsize=9)
+    ax.set_ylabel("abstractness\n(1 concrete — 5 abstract)", fontsize=9)
     ax.set_title(title, fontsize=11, fontfamily="monospace", loc="left")
 
     if label_all_words:
