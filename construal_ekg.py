@@ -20,7 +20,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-NORMS_PATH = "/home/claude/brysbaert.txt"
+NORMS_PATH = "brysbaert.txt"
 
 # Function words: the carrier, not the signal.
 FUNCTION_WORDS = set("""
