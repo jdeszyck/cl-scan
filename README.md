@@ -61,6 +61,19 @@ python3 ekg_view.py --file speech.txt out.html
 python3 ekg_view.py --file speech.txt --scorer v1 out.html   # dictionary scorer
 ```
 
+## Phrase gallery (`gallery.py`)
+
+Renders `phrases.txt` — lines of `label :: text` under `# section` headers —
+as one static HTML page of cards: mini-trace plus tinted text per phrase.
+A browsable tour of the instrument across registers (concrete recipes,
+corporate abstraction, polysemy pairs, proverbs). See `gallery.html`;
+edit `phrases.txt` and re-run to extend it.
+
+```sh
+python3 gallery.py                    # phrases.txt -> gallery.html
+python3 gallery.py myphrases.txt out.html
+```
+
 ## Training the probe (`train_probe.py`)
 
 Embeds each Brysbaert lemma through a frozen transformer

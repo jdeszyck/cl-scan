@@ -1,0 +1,31 @@
+# Ground level — concrete registers
+recipe :: Dice the onion, crush the garlic, and melt the butter in a cast-iron skillet.
+field guide :: The heron stood in the shallow water, spearing frogs with its long beak.
+stage direction :: She sets the lantern on the table, bolts the door, and pockets the key.
+Williams, "The Red Wheelbarrow" :: So much depends upon a red wheel barrow glazed with rain water beside the white chickens.
+
+# High altitude — abstract registers
+corporate :: We leverage synergies to empower stakeholder alignment and drive sustainable innovation.
+philosophy :: Existence precedes essence, and freedom is the ground of all responsibility.
+legal :: The parties hereby agree that any obligation may be assigned subject to prior written consent.
+policy :: Our commitment to accountability ensures equitable outcomes across all initiatives.
+
+# Famous lines
+Lincoln, Gettysburg :: Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in Liberty.
+Shakespeare, Hamlet :: To be, or not to be, that is the question.
+Genesis 1 (KJV) :: In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep.
+Kennedy, inaugural :: Ask not what your country can do for you — ask what you can do for your country.
+
+# Polysemy pairs — same word, different construal
+hard (physical) :: She struck a hard surface.
+hard (abstract) :: She posed a hard problem.
+light (physical) :: A bright light filled the room.
+light (abstract) :: She made a light remark.
+court (place) :: They played on the tennis court.
+court (institution) :: The court delivered its judgment.
+
+# Proverbs & metaphor — concrete vehicles, abstract tenors
+proverb :: A bird in the hand is worth two in the bush.
+proverb :: The road to hell is paved with good intentions.
+metaphor :: Time is a thief.
+Dickinson :: Hope is the thing with feathers that perches in the soul.
