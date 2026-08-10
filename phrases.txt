@@ -24,6 +24,12 @@ light (abstract) :: She made a light remark.
 court (place) :: They played on the tennis court.
 court (institution) :: The court delivered its judgment.
 
+# Classic style — hypothesis: a lift, then a drop
+La Rochefoucauld :: Madame de Chevreuse had sparkling intelligence, ambition, and beauty in plenty; she was flirtatious, lively, bold, enterprising; she used all her charms to push her projects to success, and she almost always brought disaster to those she encountered on her way.
+Austen, Pride and Prejudice :: It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.
+Lincoln, second inaugural :: With malice toward none, with charity for all, with firmness in the right as God gives us to see the right, let us strive on to finish the work we are in, to bind up the nation's wounds, to care for him who shall have borne the battle and for his widow and his orphan, to do all which may achieve and cherish a just and lasting peace among ourselves and with all nations.
+Churchill, 4 June 1940 :: We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields and in the streets, we shall fight in the hills; we shall never surrender.
+
 # Proverbs & metaphor — concrete vehicles, abstract tenors
 proverb :: A bird in the hand is worth two in the bush.
 proverb :: The road to hell is paved with good intentions.
