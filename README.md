@@ -90,6 +90,18 @@ python3 gallery.py                    # phrases.txt -> gallery.html
 python3 gallery.py myphrases.txt out.html
 ```
 
+## Lead coupling (`coupling.py`)
+
+How the breath and construal leads interact, per specimen and pooled:
+correlation between breath load and abstractness (negative = words get
+more concrete as the breath runs out), and mean abstractness at
+emphasis positions (last content word before a strong vent) vs elsewhere.
+
+```sh
+python3 coupling.py speech.txt essay.txt
+python3 coupling.py --phrases phrases.txt --section "Classic style"
+```
+
 ## Training the probe (`train_probe.py`)
 
 Embeds each Brysbaert lemma through a frozen transformer
