@@ -24,6 +24,9 @@ from matplotlib import font_manager
 
 NORMS_PATH = "brysbaert.txt"
 
+# Single source of truth for tokenization — shared by v2 and the viewer.
+WORD_RE_PATTERN = r"[A-Za-z']+"
+
 # Function words: the carrier, not the signal.
 FUNCTION_WORDS = set("""
 a an the this that these those some any each every no
@@ -73,7 +76,7 @@ def lemma_candidates(w):
 
 def score_text(text, norms):
     """Returns list of (token, score_or_None, is_content)."""
-    tokens = re.findall(r"[A-Za-z']+", text)
+    tokens = re.findall(WORD_RE_PATTERN, text)
     out = []
     for tok in tokens:
         w = tok.lower().strip("'")

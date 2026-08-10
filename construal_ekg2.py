@@ -28,10 +28,10 @@ import numpy as np
 import torch
 from transformers import AutoModel, AutoTokenizer
 
-from construal_ekg import FUNCTION_WORDS, render, waveform
+from construal_ekg import FUNCTION_WORDS, WORD_RE_PATTERN, render, waveform
 
 PROBE_PATH = "probe.npz"
-WORD_RE = re.compile(r"[A-Za-z']+")
+WORD_RE = re.compile(WORD_RE_PATTERN)
 
 
 class ContextualScorer:

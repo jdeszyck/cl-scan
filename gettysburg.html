@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gettysburg.txt</title>
+<style>
+  :root {
+    --paper: #fdf6f0; --page: #f7efe8; --panel: #fffdfb;
+    --grid-major: #e8b4a8; --grid-minor: #f3d9d0;
+    --ink: #1f1c19; --ink-2: #6b635c; --trace: #1a1a1a;
+    --concrete: #b5432e; --abstract: #3a6ea5; --neutral: #8a857e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font: 15px/1.6 Georgia, 'Times New Roman', serif;
+  }
+  header, main { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  header { padding-top: 28px; }
+  h1 { font: 600 18px/1.3 ui-monospace, 'Cascadia Code', Menlo, monospace;
+       margin: 0 0 4px; overflow-wrap: anywhere; }
+  .meta { font: 12px/1.5 ui-monospace, Menlo, monospace; color: var(--ink-2); }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .strip-wrap {
+    margin: 18px 0 6px; background: var(--paper);
+    border: 1px solid var(--grid-major); border-radius: 6px;
+    overflow-x: auto; position: relative;
+  }
+  .strip-wrap svg { display: block; }
+  #tip {
+    position: absolute; pointer-events: none; display: none; z-index: 3;
+    background: var(--ink); color: var(--paper); border-radius: 4px;
+    padding: 3px 8px; font: 12px/1.5 ui-monospace, Menlo, monospace;
+    white-space: nowrap; transform: translate(-50%, -130%);
+  }
+  #tip .val { font-weight: 700; }
+  .legend { font: 12px/1.6 ui-monospace, Menlo, monospace; color: var(--ink-2);
+            margin-bottom: 22px; }
+  .legend .sw { display: inline-block; width: 10px; height: 10px;
+                border-radius: 2px; margin: 0 4px 0 12px; vertical-align: -1px; }
+  #text {
+    background: var(--panel); border: 1px solid #e6ddd4; border-radius: 6px;
+    padding: 22px 26px; white-space: pre-wrap; margin-bottom: 20px;
+    font-size: 16px;
+  }
+  #text .w { border-radius: 3px; padding: 0 1px; cursor: default; }
+  #text .w.fn { color: var(--ink-2); }
+  #text .w.miss { border-bottom: 1px dotted var(--ink-2); }
+  #text .w.hot, #text .w:hover { outline: 2px solid var(--ink); }
+  details { margin-bottom: 40px; font-size: 13px; }
+  summary { cursor: pointer; font: 12px ui-monospace, Menlo, monospace;
+            color: var(--ink-2); }
+  table { border-collapse: collapse; margin-top: 10px;
+          font: 12px/1.6 ui-monospace, Menlo, monospace; }
+  td, th { padding: 1px 14px 1px 0; text-align: left; }
+  th { color: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<script id="payload" type="application/json">{"title": "gettysburg.txt", "scorer": "v2 contextual (distilbert-base-uncased)", "stats": {"tokens": 272, "content": 113, "scored": 113, "mean": 2.8}, "leads": [{"name": "abstractness", "lo": "concrete", "hi": "abstract", "smooth": [2.549, 2.672, 2.825, 2.925, 2.901, 2.784, 2.683, 2.699, 2.837, 2.911, 2.811, 2.611, 2.44, 2.442, 2.562, 2.723, 2.926, 3.142, 3.343, 3.533, 3.654, 3.708, 3.656, 3.47, 3.201, 2.975, 2.931, 3.103, 3.368, 3.536, 3.508, 3.324, 3.115, 2.998, 2.998, 3.017, 2.985, 2.852, 2.67, 2.478, 2.253, 1.99, 1.763, 1.654, 1.762, 2.082, 2.559, 3.06, 3.461, 3.713, 3.822, 3.809, 3.69, 3.457, 3.146, 2.839, 2.637, 2.55, 2.475, 2.282, 1.94, 1.565, 1.328, 1.294, 1.443, 1.7, 1.976, 2.186, 2.248, 2.131, 1.872, 1.568, 1.346, 1.286, 1.443, 1.762, 2.066, 2.192, 2.084, 1.887, 1.827, 1.983, 2.267, 2.523, 2.604, 2.489, 2.24, 1.99, 1.859, 1.933, 2.208, 2.595, 2.956, 3.206, 3.307, 3.298, 3.258, 3.239, 3.255, 3.301, 3.352, 3.405, 3.458, 3.511, 3.563, 3.61, 3.649, 3.674, 3.684, 3.678, 3.655, 3.609, 3.537, 3.451, 3.374, 3.329, 3.329, 3.336, 3.284, 3.135, 2.916, 2.651, 2.445, 2.27, 2.143, 2.101, 2.13, 2.249, 2.516, 2.833, 3.156, 3.419, 3.598, 3.709, 3.749, 3.752, 3.751, 3.78, 3.815, 3.807, 3.733, 3.594, 3.379, 3.122, 2.912, 2.852, 2.971, 3.186, 3.372, 3.41, 3.27, 3.025, 2.79, 2.664, 2.694, 2.844, 3.061, 3.283, 3.454, 3.533, 3.501, 3.377, 3.202, 3.008, 2.814, 2.62, 2.426, 2.262, 2.178, 2.239, 2.476, 2.832, 3.202, 3.483, 3.62, 3.596, 3.438, 3.169, 2.859, 2.594, 2.448, 2.453, 2.644, 2.963, 3.328, 3.621, 3.768, 3.788, 3.721, 3.607, 3.519, 3.478, 3.484, 3.522, 3.561, 3.6, 3.637, 3.666, 3.683, 3.637, 3.517, 3.319, 3.11, 2.973, 2.922, 2.916, 2.928, 2.837, 2.637, 2.337, 2.083, 2.095, 2.395, 2.824, 3.169, 3.255, 3.129, 2.926, 2.743, 2.633, 2.567, 2.522, 2.473, 2.444, 2.479, 2.625, 2.882, 3.162, 3.368, 3.46, 3.424, 3.248, 2.904, 2.426, 1.937, 1.596, 1.498, 1.636, 1.941, 2.31, 2.607, 2.678, 2.478, 2.148, 1.92, 1.93, 2.14, 2.397, 2.603, 2.729, 2.805, 2.87, 2.959, 3.08, 3.175, 3.162, 2.942, 2.519, 2.003, 1.568, 1.318, 1.243, 1.247, 1.294, 1.41, 1.683, 2.098, 2.521, 2.742, 2.667, 2.368, 2.036]}], "tokens": [{"pre": "", "t": "Four", "s": 2.456, "c": true}, {"pre": " ", "t": "score", "s": 2.49, "c": true}, {"pre": " ", "t": "and", "s": null, "c": false}, {"pre": " ", "t": "seven", "s": 3.276, "c": true}, {"pre": " ", "t": "years", "s": 2.932, "c": true}, {"pre": " ", "t": "ago", "s": 2.993, "c": true}, {"pre": " ", "t": "our", "s": null, "c": false}, {"pre": " ", "t": "fathers", "s": 2.011, "c": true}, {"pre": " ", "t": "brought", "s": 2.849, "c": true}, {"pre": " ", "t": "forth", "s": 3.766, "c": true}, {"pre": " ", "t": "on", "s": null, "c": false}, {"pre": " ", "t": "this", "s": null, "c": false}, {"pre": " ", "t": "continent", "s": 1.689, "c": true}, {"pre": ", ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "new", "s": 3.23, "c": true}, {"pre": " ", "t": "nation", "s": 1.879, "c": true}, {"pre": ", ", "t": "conceived", "s": 3.194, "c": true}, {"pre": " ", "t": "in", "s": null, "c": false}, {"pre": " ", "t": "Liberty", "s": 3.29, "c": true}, {"pre": ", ", "t": "and", "s": null, "c": false}, {"pre": " ", "t": "dedicated", "s": 3.803, "c": true}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "proposition", "s": 3.752, "c": true}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "all", "s": null, "c": false}, {"pre": " ", "t": "men", "s": 2.237, "c": true}, {"pre": " ", "t": "are", "s": null, "c": false}, {"pre": " ", "t": "created", "s": 3.703, "c": true}, {"pre": " ", "t": "equal", "s": 3.968, "c": true}, {"pre": ".\n\n", "t": "Now", "s": 3.656, "c": true}, {"pre": " ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "are", "s": null, "c": false}, {"pre": " ", "t": "engaged", "s": 2.672, "c": true}, {"pre": " ", "t": "in", "s": null, "c": false}, {"pre": " ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "great", "s": 3.382, "c": true}, {"pre": " ", "t": "civil", "s": 3.01, "c": true}, {"pre": " ", "t": "war", "s": 1.995, "c": true}, {"pre": ", ", "t": "testing", "s": 2.936, "c": true}, {"pre": " ", "t": "whether", "s": null, "c": false}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "nation", "s": 1.44, "c": true}, {"pre": ", ", "t": "or", "s": null, "c": false}, {"pre": " ", "t": "any", "s": null, "c": false}, {"pre": " ", "t": "nation", "s": 1.624, "c": true}, {"pre": " ", "t": "so", "s": null, "c": false}, {"pre": " ", "t": "conceived", "s": 3.446, "c": true}, {"pre": " ", "t": "and", "s": null, "c": false}, {"pre": " ", "t": "so", "s": null, "c": false}, {"pre": " ", "t": "dedicated", "s": 3.977, "c": true}, {"pre": ", ", "t": "can", "s": null, "c": false}, {"pre": " ", "t": "long", "s": 3.8, "c": true}, {"pre": " ", "t": "endure", "s": 3.662, "c": true}, {"pre": ". ", "t": "We", "s": null, "c": false}, {"pre": " ", "t": "are", "s": null, "c": false}, {"pre": " ", "t": "met", "s": 2.235, "c": true}, {"pre": " ", "t": "on", "s": null, "c": false}, {"pre": " ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "great", "s": 2.895, "c": true}, {"pre": " ", "t": "battle", "s": 2.021, "c": true}, {"pre": "-", "t": "field", "s": 1.0, "c": true}, {"pre": " ", "t": "of", "s": null, "c": false}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "war", "s": 1.279, "c": true}, {"pre": ". ", "t": "We", "s": null, "c": false}, {"pre": " ", "t": "have", "s": null, "c": false}, {"pre": " ", "t": "come", "s": 2.413, "c": true}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "dedicate", "s": 2.476, "c": true}, {"pre": " ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "portion", "s": 1.325, "c": true}, {"pre": " ", "t": "of", "s": null, "c": false}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "field", "s": 1.0, "c": true}, {"pre": ", ", "t": "as", "s": null, "c": false}, {"pre": " ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "final", "s": 2.975, "c": true}, {"pre": " ", "t": "resting", "s": 2.408, "c": true}, {"pre": " ", "t": "place", "s": 1.114, "c": true}, {"pre": " ", "t": "for", "s": null, "c": false}, {"pre": " ", "t": "those", "s": null, "c": false}, {"pre": " ", "t": "who", "s": null, "c": false}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": " ", "t": "gave", "s": 3.1, "c": true}, {"pre": " ", "t": "their", "s": null, "c": false}, {"pre": " ", "t": "lives", "s": 2.141, "c": true}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "nation", "s": 1.417, "c": true}, {"pre": " ", "t": "might", "s": null, "c": false}, {"pre": " ", "t": "live", "s": 2.782, "c": true}, {"pre": ". ", "t": "It", "s": null, "c": false}, {"pre": " ", "t": "is", "s": null, "c": false}, {"pre": " ", "t": "altogether", "s": 3.647, "c": true}, {"pre": " ", "t": "fitting", "s": 3.175, "c": true}, {"pre": " ", "t": "and", "s": null, "c": false}, {"pre": " ", "t": "proper", "s": 3.193, "c": true}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "should", "s": null, "c": false}, {"pre": " ", "t": "do", "s": null, "c": false}, {"pre": " ", "t": "this", "s": null, "c": false}, {"pre": ".\n\n", "t": "But", "s": null, "c": false}, {"pre": ", ", "t": "in", "s": null, "c": false}, {"pre": " ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "larger", "s": 3.67, "c": true}, {"pre": " ", "t": "sense", "s": 3.701, "c": true}, {"pre": ", ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "can", "s": null, "c": false}, {"pre": " ", "t": "not", "s": null, "c": false}, {"pre": " ", "t": "dedicate", "s": 3.668, "c": true}, {"pre": " \u2014 ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "can", "s": null, "c": false}, {"pre": " ", "t": "not", "s": null, "c": false}, {"pre": " ", "t": "consecrate", "s": 3.227, "c": true}, {"pre": " \u2014 ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "can", "s": null, "c": false}, {"pre": " ", "t": "not", "s": null, "c": false}, {"pre": " ", "t": "hallow", "s": 3.49, "c": true}, {"pre": " \u2014 ", "t": "this", "s": null, "c": false}, {"pre": " ", "t": "ground", "s": 2.252, "c": true}, {"pre": ". ", "t": "The", "s": null, "c": false}, {"pre": " ", "t": "brave", "s": 2.823, "c": true}, {"pre": " ", "t": "men", "s": 1.0, "c": true}, {"pre": ", ", "t": "living", "s": 2.693, "c": true}, {"pre": " ", "t": "and", "s": null, "c": false}, {"pre": " ", "t": "dead", "s": 1.66, "c": true}, {"pre": ", ", "t": "who", "s": null, "c": false}, {"pre": " ", "t": "struggled", "s": 3.084, "c": true}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": ", ", "t": "have", "s": null, "c": false}, {"pre": " ", "t": "consecrated", "s": 3.633, "c": true}, {"pre": " ", "t": "it", "s": null, "c": false}, {"pre": ", ", "t": "far", "s": 3.923, "c": true}, {"pre": " ", "t": "above", "s": null, "c": false}, {"pre": " ", "t": "our", "s": null, "c": false}, {"pre": " ", "t": "poor", "s": 3.464, "c": true}, {"pre": " ", "t": "power", "s": 4.285, "c": true}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "add", "s": 3.528, "c": true}, {"pre": " ", "t": "or", "s": null, "c": false}, {"pre": " ", "t": "detract", "s": 3.788, "c": true}, {"pre": ". ", "t": "The", "s": null, "c": false}, {"pre": " ", "t": "world", "s": 2.412, "c": true}, {"pre": " ", "t": "will", "s": null, "c": false}, {"pre": " ", "t": "little", "s": 2.887, "c": true}, {"pre": " ", "t": "note", "s": 3.168, "c": true}, {"pre": ", ", "t": "nor", "s": null, "c": false}, {"pre": " ", "t": "long", "s": 3.908, "c": true}, {"pre": " ", "t": "remember", "s": 3.311, "c": true}, {"pre": " ", "t": "what", "s": null, "c": false}, {"pre": " ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "say", "s": 2.337, "c": true}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": ", ", "t": "but", "s": null, "c": false}, {"pre": " ", "t": "it", "s": null, "c": false}, {"pre": " ", "t": "can", "s": null, "c": false}, {"pre": " ", "t": "never", "s": null, "c": false}, {"pre": " ", "t": "forget", "s": 3.784, "c": true}, {"pre": " ", "t": "what", "s": null, "c": false}, {"pre": " ", "t": "they", "s": null, "c": false}, {"pre": " ", "t": "did", "s": null, "c": false}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": ". ", "t": "It", "s": null, "c": false}, {"pre": " ", "t": "is", "s": null, "c": false}, {"pre": " ", "t": "for", "s": null, "c": false}, {"pre": " ", "t": "us", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "living", "s": 1.843, "c": true}, {"pre": ", ", "t": "rather", "s": null, "c": false}, {"pre": ", ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "be", "s": null, "c": false}, {"pre": " ", "t": "dedicated", "s": 3.81, "c": true}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "unfinished", "s": 3.513, "c": true}, {"pre": " ", "t": "work", "s": 2.509, "c": true}, {"pre": " ", "t": "which", "s": null, "c": false}, {"pre": " ", "t": "they", "s": null, "c": false}, {"pre": " ", "t": "who", "s": null, "c": false}, {"pre": " ", "t": "fought", "s": 2.244, "c": true}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": " ", "t": "have", "s": null, "c": false}, {"pre": " ", "t": "thus", "s": 4.125, "c": true}, {"pre": " ", "t": "far", "s": 3.613, "c": true}, {"pre": " ", "t": "so", "s": null, "c": false}, {"pre": " ", "t": "nobly", "s": 4.08, "c": true}, {"pre": " ", "t": "advanced", "s": 3.367, "c": true}, {"pre": ". ", "t": "It", "s": null, "c": false}, {"pre": " ", "t": "is", "s": null, "c": false}, {"pre": " ", "t": "rather", "s": null, "c": false}, {"pre": " ", "t": "for", "s": null, "c": false}, {"pre": " ", "t": "us", "s": null, "c": false}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "be", "s": null, "c": false}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": " ", "t": "dedicated", "s": 3.717, "c": true}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "great", "s": 3.658, "c": true}, {"pre": " ", "t": "task", "s": 2.539, "c": true}, {"pre": " ", "t": "remaining", "s": 2.946, "c": true}, {"pre": " ", "t": "before", "s": null, "c": false}, {"pre": " ", "t": "us", "s": null, "c": false}, {"pre": " \u2014 ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "from", "s": null, "c": false}, {"pre": " ", "t": "these", "s": null, "c": false}, {"pre": " ", "t": "honored", "s": 2.909, "c": true}, {"pre": " ", "t": "dead", "s": 1.0, "c": true}, {"pre": " ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "take", "s": 2.307, "c": true}, {"pre": " ", "t": "increased", "s": 2.837, "c": true}, {"pre": " ", "t": "devotion", "s": 3.909, "c": true}, {"pre": " ", "t": "to", "s": null, "c": false}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "cause", "s": 2.733, "c": true}, {"pre": " ", "t": "for", "s": null, "c": false}, {"pre": " ", "t": "which", "s": null, "c": false}, {"pre": " ", "t": "they", "s": null, "c": false}, {"pre": " ", "t": "gave", "s": 2.5, "c": true}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "last", "s": 2.473, "c": true}, {"pre": " ", "t": "full", "s": 2.364, "c": true}, {"pre": " ", "t": "measure", "s": 2.194, "c": true}, {"pre": " ", "t": "of", "s": null, "c": false}, {"pre": " ", "t": "devotion", "s": 3.506, "c": true}, {"pre": " \u2014 ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "we", "s": null, "c": false}, {"pre": " ", "t": "here", "s": null, "c": false}, {"pre": " ", "t": "highly", "s": 3.496, "c": true}, {"pre": " ", "t": "resolve", "s": 3.238, "c": true}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "these", "s": null, "c": false}, {"pre": " ", "t": "dead", "s": 1.0, "c": true}, {"pre": " ", "t": "shall", "s": null, "c": false}, {"pre": " ", "t": "not", "s": null, "c": false}, {"pre": " ", "t": "have", "s": null, "c": false}, {"pre": " ", "t": "died", "s": 2.145, "c": true}, {"pre": " ", "t": "in", "s": null, "c": false}, {"pre": " ", "t": "vain", "s": 3.514, "c": true}, {"pre": " \u2014 ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "this", "s": null, "c": false}, {"pre": " ", "t": "nation", "s": 1.132, "c": true}, {"pre": ", ", "t": "under", "s": null, "c": false}, {"pre": " ", "t": "God", "s": 2.34, "c": true}, {"pre": ", ", "t": "shall", "s": null, "c": false}, {"pre": " ", "t": "have", "s": null, "c": false}, {"pre": " ", "t": "a", "s": null, "c": false}, {"pre": " ", "t": "new", "s": 2.941, "c": true}, {"pre": " ", "t": "birth", "s": 2.693, "c": true}, {"pre": " ", "t": "of", "s": null, "c": false}, {"pre": " ", "t": "freedom", "s": 3.107, "c": true}, {"pre": " \u2014 ", "t": "and", "s": null, "c": false}, {"pre": " ", "t": "that", "s": null, "c": false}, {"pre": " ", "t": "government", "s": 3.485, "c": true}, {"pre": " ", "t": "of", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "people", "s": 1.046, "c": true}, {"pre": ", ", "t": "by", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "people", "s": 1.321, "c": true}, {"pre": ", ", "t": "for", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "people", "s": 1.211, "c": true}, {"pre": ", ", "t": "shall", "s": null, "c": false}, {"pre": " ", "t": "not", "s": null, "c": false}, {"pre": " ", "t": "perish", "s": 3.556, "c": true}, {"pre": " ", "t": "from", "s": null, "c": false}, {"pre": " ", "t": "the", "s": null, "c": false}, {"pre": " ", "t": "earth", "s": 1.674, "c": true}], "tail": ".\n"}</script>
+<header>
+  <h1 id="title"></h1>
+  <div class="meta" id="meta"></div>
+</header>
+<main>
+  <div class="strip-wrap" id="strip"><div id="tip"></div></div>
+  <div class="legend">word tint:
+    <span class="sw" style="background:#f2c4b8"></span>concrete (1)
+    <span class="sw" style="background:#e9e4de"></span>mid (3)
+    <span class="sw" style="background:#bcd3ec"></span>abstract (5)
+    &nbsp;·&nbsp; dotted underline = unscored &nbsp;·&nbsp; gray = function word
+  </div>
+  <div id="text"></div>
+  <details><summary>data table</summary><table id="table"></table></details>
+</main>
+<script>
+const D = JSON.parse(document.getElementById('payload').textContent);
+const lead = D.leads[0];
+const N = D.tokens.length;
+
+document.getElementById('title').textContent = D.title;
+document.getElementById('meta').innerHTML =
+  `lead: <b>${lead.name}</b> (1 ${lead.lo} — 5 ${lead.hi}) · scorer: <b>${D.scorer}</b>` +
+  ` · tokens: <b>${D.stats.tokens}</b> · content scored: <b>${D.stats.scored}/${D.stats.content}</b>` +
+  ` · mean: <b>${D.stats.mean}</b>`;
+
+// ---- color: diverging around 3, validated poles ----
+const POLES = { strong: ['#b5432e', '#8a857e', '#3a6ea5'],
+                chip:   ['#f2c4b8', '#e9e4de', '#bcd3ec'] };
+function hex2rgb(h){ return [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); }
+function mix(a, b, t){
+  const A = hex2rgb(a), B = hex2rgb(b);
+  return 'rgb(' + A.map((v,i) => Math.round(v + (B[i]-v)*t)).join(',') + ')';
+}
+function colorFor(s, kind){
+  const [lo, mid, hi] = POLES[kind];
+  const t = Math.max(-1, Math.min(1, (s - 3) / 2));
+  return t < 0 ? mix(mid, lo, -t) : mix(mid, hi, t);
+}
+
+// ---- strip geometry ----
+const PX = 14, ML = 48, MR = 16, MT = 14, MB = 26, PH = 200;
+const W = ML + N * PX + MR, H = MT + PH + MB;
+const X = i => ML + (i + 0.5) * PX;
+const Y = s => MT + (5 - s) / 4 * PH;
+
+const S = [];
+S.push(`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="ui-monospace,Menlo,monospace">`);
+for (let s = 1; s <= 5; s += 0.5) {
+  const major = Number.isInteger(s);
+  S.push(`<line x1="${ML}" x2="${W-MR}" y1="${Y(s)}" y2="${Y(s)}"
+    stroke="${major ? 'var(--grid-major)' : 'var(--grid-minor)'}" stroke-width="${major ? 0.8 : 0.5}"/>`);
+  if (major) S.push(`<text x="${ML-8}" y="${Y(s)+4}" text-anchor="end" font-size="11" fill="var(--ink-2)">${s}</text>`);
+}
+for (let i = 0; i < N; i += 5) {
+  const major = i % 25 === 0;
+  S.push(`<line x1="${X(i)}" x2="${X(i)}" y1="${MT}" y2="${MT+PH}"
+    stroke="${major ? 'var(--grid-major)' : 'var(--grid-minor)'}" stroke-width="${major ? 0.8 : 0.5}"/>`);
+  if (major) S.push(`<text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--ink-2)">${i}</text>`);
+}
+S.push(`<line x1="${ML}" x2="${W-MR}" y1="${Y(3)}" y2="${Y(3)}" stroke="var(--neutral)"
+  stroke-width="0.8" stroke-dasharray="5 4" opacity="0.7"/>`);
+S.push(`<path d="${lead.smooth.map((v,i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join('')}"
+  fill="none" stroke="var(--trace)" stroke-width="2" stroke-linejoin="round"/>`);
+D.tokens.forEach((tk, i) => {
+  if (tk.s === null) return;
+  S.push(`<circle id="dot${i}" cx="${X(i)}" cy="${Y(tk.s)}" r="3.2"
+    fill="${colorFor(tk.s, 'strong')}" stroke="var(--paper)" stroke-width="1"/>`);
+});
+S.push(`<line id="cross" y1="${MT}" y2="${MT+PH}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`);
+S.push('</svg>');
+const strip = document.getElementById('strip');
+strip.insertAdjacentHTML('beforeend', S.join(''));
+const svg = strip.querySelector('svg'), cross = document.getElementById('cross');
+const tip = document.getElementById('tip');
+
+// ---- text panel ----
+const textEl = document.getElementById('text');
+textEl.innerHTML = D.tokens.map((tk, i) => {
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  let cls = 'w', style = '';
+  if (!tk.c) cls += ' fn';
+  else if (tk.s === null) cls += ' miss';
+  else style = ` style="background:${colorFor(tk.s, 'chip')}"`;
+  return esc(tk.pre) + `<span class="${cls}" id="w${i}" data-i="${i}"${style}>${esc(tk.t)}</span>`;
+}).join('') + D.tail;
+
+// ---- linking ----
+let hotWord = null, hotDot = null;
+function light(i, scrollTrace, scrollText) {
+  if (hotWord) hotWord.classList.remove('hot');
+  if (hotDot) hotDot.setAttribute('r', 3.2);
+  hotWord = document.getElementById('w' + i);
+  hotDot = document.getElementById('dot' + i);
+  if (hotWord) hotWord.classList.add('hot');
+  if (hotDot) hotDot.setAttribute('r', 5.5);
+  cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i));
+  cross.setAttribute('visibility', 'visible');
+  const tk = D.tokens[i];
+  tip.innerHTML = `${tk.t} · <span class="val">${tk.s === null ? (tk.c ? 'unscored' : 'function word') : tk.s.toFixed(2)}</span>`;
+  const ty = Y(tk.s ?? 3);
+  tip.style.left = X(i) + 'px';
+  tip.style.top = ty + 'px';
+  // flip below the point when too close to the top edge (the scroll
+  // container clips anything above it)
+  tip.style.transform = ty < 55 ? 'translate(-50%, 30%)' : 'translate(-50%, -130%)';
+  tip.style.display = 'block';
+  if (scrollTrace) strip.scrollTo({left: X(i) - strip.clientWidth / 2, behavior: 'smooth'});
+  if (scrollText && hotWord) hotWord.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+}
+function unlight() {
+  if (hotWord) hotWord.classList.remove('hot');
+  if (hotDot) hotDot.setAttribute('r', 3.2);
+  hotWord = hotDot = null;
+  cross.setAttribute('visibility', 'hidden');
+  tip.style.display = 'none';
+}
+svg.addEventListener('mousemove', e => {
+  const i = Math.max(0, Math.min(N - 1,
+    Math.floor((e.clientX - svg.getBoundingClientRect().left - ML) / PX)));
+  light(i, false, false);
+});
+svg.addEventListener('mouseleave', unlight);
+svg.addEventListener('click', e => {
+  const i = Math.max(0, Math.min(N - 1,
+    Math.floor((e.clientX - svg.getBoundingClientRect().left - ML) / PX)));
+  light(i, false, true);
+});
+textEl.addEventListener('mouseover', e => {
+  const w = e.target.closest('.w'); if (w) light(+w.dataset.i, false, false);
+});
+textEl.addEventListener('mouseout', unlight);
+textEl.addEventListener('click', e => {
+  const w = e.target.closest('.w'); if (w) light(+w.dataset.i, true, false);
+});
+
+// ---- data table ----
+document.getElementById('table').innerHTML =
+  '<tr><th>#</th><th>token</th><th>abstractness</th></tr>' +
+  D.tokens.map((tk, i) =>
+    `<tr><td>${i}</td><td>${tk.t}</td><td>${tk.s === null ? (tk.c ? '—' : 'fn') : tk.s.toFixed(2)}</td></tr>`
+  ).join('');
+</script>
+</body>
+</html>

@@ -47,6 +47,20 @@ python3 construal_ekg2.py --file a.txt --overlay b.txt out.png   # compare two t
 python3 construal_ekg2.py --demo                                 # polysemy divergence test
 ```
 
+## Interactive viewer (`ekg_view.py`)
+
+Emits a single self-contained HTML file: the trace strip on top, the full
+text below, linked both ways. Hover a word to light it up on the waveform,
+hover the trace to highlight the word, click either to jump the other into
+view. Words are tinted by abstractness (terracotta = concrete, blue =
+abstract); function words stay plain. See `gettysburg.html` for a sample.
+
+```sh
+python3 ekg_view.py "Your sentence here." out.html
+python3 ekg_view.py --file speech.txt out.html
+python3 ekg_view.py --file speech.txt --scorer v1 out.html   # dictionary scorer
+```
+
 ## Training the probe (`train_probe.py`)
 
 Embeds each Brysbaert lemma through a frozen transformer
