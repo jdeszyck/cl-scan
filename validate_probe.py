@@ -11,6 +11,7 @@ abstract?), mean delta in abstractness units with a bootstrap CI, an exact
 binomial test against chance, a per-POS breakdown, and the failing pairs.
 
 Usage: python validate_probe.py [--pairs polysemy_pairs.tsv] [--probe probe.npz]
+       python validate_probe.py --sheet rating_sheet.csv   # blinded rating sheet
 """
 import argparse
 import math
@@ -53,13 +54,60 @@ def binom_p_one_sided(k, n):
     return sum(math.comb(n, i) for i in range(k, n + 1)) / 2 ** n
 
 
+def write_sheet(pairs, out_path):
+    """Emit a blinded, shuffled human-rating sheet plus a separate answer key.
+
+    One row per sentence (2 per pair), fixed-seed shuffle, target word
+    bracketed. The sheet carries no pair grouping or sense labels; those
+    live only in the key file, which raters must not see.
+    """
+    import csv
+    import random
+
+    items = []
+    for p in pairs:
+        for sense in ("concrete", "abstract"):
+            marked = re.sub(rf"\b{re.escape(p['word'])}\b",
+                            lambda m: f"[{m.group(0)}]",
+                            p[sense], count=1, flags=re.IGNORECASE)
+            items.append({"word": p["word"], "pos": p["pos"],
+                          "sense": sense, "sentence": marked})
+    random.Random(0).shuffle(items)
+
+    key_path = re.sub(r"\.csv$", "", out_path) + "_key.csv"
+    with open(out_path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["item", "sentence", "rating"])
+        for i, it in enumerate(items, 1):
+            w.writerow([i, it["sentence"], ""])
+    with open(key_path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["item", "word", "pos", "sense"])
+        for i, it in enumerate(items, 1):
+            w.writerow([i, it["word"], it["pos"], it["sense"]])
+
+    print(f"wrote {len(items)} items to {out_path} (key: {key_path})")
+    print("\nRater instructions:")
+    print("  Rate the meaning of the [bracketed] word as used in the sentence,")
+    print("  on a 1-7 scale: 1 = highly concrete (something you can see, touch,")
+    print("  hear, or physically act on), 7 = highly abstract (an idea, quality,")
+    print("  or state with no direct sensory referent). Enter the number in the")
+    print("  'rating' column. Keep the key file away from raters.")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pairs", default="polysemy_pairs.tsv")
     ap.add_argument("--probe", default="probe.npz")
+    ap.add_argument("--sheet", metavar="OUT.csv",
+                    help="write a blinded human-rating sheet (+ answer key) "
+                         "and exit instead of running the probe")
     args = ap.parse_args()
 
     pairs = load_pairs(args.pairs)
+    if args.sheet:
+        write_sheet(pairs, args.sheet)
+        return
     by_pos = {}
     for p in pairs:
         by_pos.setdefault(p["pos"], []).append(p)
