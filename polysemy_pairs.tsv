@@ -1,0 +1,113 @@
+# Polysemy/metaphor minimal pairs for contextual probe validation.
+# Same surface form in both sentences; concrete sense vs abstract sense.
+# The v1 dictionary scorer scores both occurrences identically by construction,
+# so any v2 discrimination is contextual signal.
+word	pos	concrete	abstract
+hard	adj	The workers drilled through hard rock.	The committee faced a hard decision.
+light	adj	She packed a light suitcase for the trip.	They kept the conversation light at dinner.
+heavy	adj	He lifted the heavy crate onto the truck.	The novel deals with heavy themes.
+deep	adj	The divers explored the deep trench.	They shared a deep commitment to justice.
+bright	adj	A bright lamp lit the workbench.	She had a bright future in medicine.
+dark	adj	They stumbled down a dark hallway.	The film explored the dark side of fame.
+cold	adj	He waded into the cold river.	She gave him a cold reply.
+warm	adj	They sat by the warm stove.	The visitors received a warm welcome.
+sharp	adj	Use a sharp knife to slice the onions.	She has a sharp mind for numbers.
+dull	adj	The dull blade tore the bread.	The lecture was dull beyond endurance.
+soft	adj	The kitten slept on a soft blanket.	The senator took a soft stance on tariffs.
+rough	adj	He sanded the rough plank.	They sketched a rough plan for the merger.
+smooth	adj	The pebbles were smooth from the surf.	The handover was smooth despite the deadline.
+clear	adj	They fished in the clear water.	She gave a clear explanation of the rules.
+solid	adj	The bench was carved from solid oak.	The lawyer built a solid argument.
+hollow	adj	The owl nested in a hollow trunk.	His apology rang hollow to everyone.
+thin	adj	He wore a thin jacket in the snow.	The evidence against her was thin.
+narrow	adj	They squeezed through a narrow alley.	The court took a narrow reading of the statute.
+broad	adj	The river is broad near its mouth.	The law grants broad powers to inspectors.
+high	adj	The eagle circled the high cliffs.	The team sets high standards for itself.
+low	adj	They ducked under the low beam.	Morale in the office was low all winter.
+sweet	adj	The mango was sweet and dripping.	Victory over their rivals was sweet.
+bitter	adj	The medicine left a bitter taste.	The divorce turned bitter within weeks.
+sour	adj	The milk smelled sour by morning.	Their partnership went sour over money.
+dry	adj	The firewood must stay dry all winter.	His humor was dry and unsparing.
+slippery	adj	The tiles were slippery after the rain.	The witness gave slippery answers.
+sticky	adj	Honey left the counter sticky.	The inheritance raised a sticky question.
+fragile	adj	She wrapped the fragile vase in cloth.	The ceasefire remained fragile all spring.
+cool	adj	The cellar stays cool in summer.	The investors were cool to the proposal.
+flat	adj	They hiked across the flat plain.	The joke fell flat at the funeral.
+blunt	adj	The axe was too blunt to split kindling.	Her assessment was blunt but fair.
+shallow	adj	The children splashed in the shallow end.	The article offered a shallow analysis.
+court	noun	The players swept rain from the court.	The court dismissed the appeal.
+branch	noun	A sparrow landed on the swaying branch.	Congress checks the executive branch.
+field	noun	The cows grazed in the field.	She works in the field of epidemiology.
+current	noun	The current dragged the canoe downstream.	A current of resentment ran through the debate.
+wave	noun	A wave crashed over the seawall.	A wave of nostalgia swept the crowd.
+root	noun	The pig dug up a gnarled root.	Greed is the root of the scandal.
+seed	noun	She pressed each seed into the soil.	The rumor planted a seed of doubt.
+bridge	noun	Trucks rumbled across the steel bridge.	The summit built a bridge between the parties.
+wall	noun	Ivy covered the garden wall.	He hit a wall in the negotiations.
+door	noun	She painted the front door red.	The scholarship opened a door for her.
+path	noun	The path wound through the birches.	She chose an unusual path to power.
+road	noun	Gravel crunched on the mountain road.	The road to reform is long.
+ladder	noun	He steadied the ladder against the gutter.	She climbed the corporate ladder quickly.
+chain	noun	The anchor hung from a rusted chain.	A chain of errors doomed the mission.
+thread	noun	She pulled a loose thread from the hem.	A thread of irony runs through the memoir.
+web	noun	A spider spun its web in the doorway.	He was caught in a web of lies.
+foundation	noun	Cracks spread through the concrete foundation.	Trust is the foundation of any alliance.
+anchor	noun	The crew winched the anchor aboard.	Routine was the anchor of his recovery.
+mirror	noun	She wiped steam from the bathroom mirror.	The election was a mirror of the nation's fears.
+shadow	noun	The oak cast a long shadow on the lawn.	He lived in the shadow of his famous brother.
+weight	noun	The scale showed the weight of the flour.	She felt the weight of the decision.
+balance	noun	The gymnast kept her balance on the beam.	The treaty preserved the balance of power.
+key	noun	The key stuck in the rusty lock.	Patience is the key to teaching.
+ceiling	noun	Paint peeled from the kitchen ceiling.	The law imposes a ceiling on donations.
+floor	noun	They mopped the warehouse floor.	The union negotiated a floor for wages.
+step	noun	The bottom step creaked underfoot.	The apology was a step toward peace.
+spark	noun	A spark leapt from the campfire.	The insult was the spark for the riot.
+flame	noun	The candle flame guttered in the draft.	The flame of rebellion spread through the province.
+storm	noun	The storm flattened the barley.	The verdict raised a storm of protest.
+stream	noun	Trout hovered in the cold stream.	A stream of complaints reached the office.
+channel	noun	The dredger deepened the shipping channel.	They opened a channel for negotiations.
+filter	noun	He rinsed the coffee filter.	She views the past through a filter of regret.
+lens	noun	Dust settled on the camera lens.	The historian reads the war through the lens of economics.
+frame	noun	The photo sat in a walnut frame.	His question set the frame for the discussion.
+horizon	noun	The sun dipped below the horizon.	New treatments appeared on the horizon.
+compass	noun	The hiker checked her compass at the fork.	His faith served as his moral compass.
+echo	noun	An echo bounced off the canyon walls.	The ruling was an echo of older prejudice.
+grasped	verb	She grasped the rope with both hands.	She grasped the argument at once.
+see	verb	From the ridge you can see the harbor.	Now I see why the plan failed.
+runs	verb	He runs along the canal every morning.	She runs a small accounting firm.
+held	verb	He held the ladder while she climbed.	She held a controversial opinion.
+carried	verb	The porters carried crates up the gangway.	Her testimony carried great weight.
+weighed	verb	The grocer weighed the plums on a brass scale.	The judge weighed the competing claims.
+cut	verb	She cut the melon into wedges.	The board cut the training budget.
+dug	verb	The terrier dug a hole under the fence.	Reporters dug into the senator's finances.
+built	verb	They built a cabin from salvaged timber.	The coach built trust within the squad.
+broke	verb	He broke a window with the ball.	She broke her promise within a week.
+bent	verb	He bent the wire into a hook.	The dean bent the rules for her.
+stretched	verb	She stretched the canvas over the frame.	His claim stretched the truth.
+pushed	verb	They pushed the stalled car off the road.	The union pushed for shorter shifts.
+pulled	verb	The oxen pulled the plow through clay.	The party pulled its support from the bill.
+leaned	verb	The shovel leaned against the shed.	The editorial page leaned toward reform.
+climbed	verb	The boys climbed the water tower at dusk.	Prices climbed throughout the shortage.
+fell	verb	Ripe apples fell into the wet grass.	The government fell after the scandal.
+rose	verb	Smoke rose from the chimney.	Objections rose from every faction.
+sank	verb	The skiff sank in the squall.	His heart sank at the news.
+floated	verb	Petals floated on the pond.	The board floated a merger proposal.
+drifted	verb	The raft drifted toward the reeds.	The lecture drifted from its topic.
+flowed	verb	Meltwater flowed down the gully.	Donations flowed after the appeal.
+froze	verb	The pond froze solid by December.	Congress froze the agency's funding.
+melted	verb	The butter melted in the skillet.	Her resistance melted at his apology.
+burned	verb	The toast burned under the broiler.	The insult burned in his memory.
+planted	verb	They planted tomatoes along the fence.	The lawyer planted doubt in the jury.
+harvested	verb	The crew harvested wheat before the rain.	The firm harvested data from its users.
+absorbed	verb	The sponge absorbed the spilled wine.	The startup absorbed heavy losses.
+digest	verb	Snakes digest their prey slowly.	She needed a week to digest the verdict.
+chewed	verb	The cows chewed their cud in the shade.	He chewed on the offer overnight.
+swallowed	verb	She swallowed the pill with water.	He swallowed his pride and apologized.
+touched	verb	She touched the marble with her fingertips.	The eulogy touched everyone present.
+struck	verb	The hammer struck the chisel squarely.	The idea struck her as absurd.
+wove	verb	She wove the reeds into a basket.	The author wove grief into the comedy.
+spun	verb	The potter spun the wheel with one foot.	The aides spun the defeat as progress.
+steered	verb	She steered the truck around the crater.	The chair steered the meeting toward a vote.
+navigated	verb	The pilot navigated the shoals at low tide.	She navigated the visa bureaucracy with ease.
+shouldered	verb	He shouldered the duffel and boarded the bus.	She shouldered the blame for the collapse.
+juggled	verb	The clown juggled five oranges.	She juggled two jobs and a thesis.
