@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word meaning ratings</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f5f4f0; color: #1a1a1a;
+         margin: 0; display: flex; justify-content: center; }
+  .card { max-width: 660px; width: 100%; margin: 3rem 1rem; background: #fff;
+          border: 1px solid #ddd; border-radius: 10px; padding: 2rem; }
+  h1 { font-size: 1.3rem; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  #sent { font-size: 1.45rem; line-height: 1.5; margin: 2rem 0; min-height: 4.5rem; }
+  #sent b { background: #fff3c4; padding: 0 .15em; border-radius: 3px; }
+  .btns { display: flex; gap: .5rem; justify-content: center; }
+  .btns button { width: 3rem; height: 3rem; font-size: 1.2rem; border: 1px solid #bbb;
+                 border-radius: 8px; background: #fafafa; cursor: pointer; }
+  .btns button:hover { background: #e8f0fe; }
+  .anchors { display: flex; justify-content: space-between; font-size: .85rem;
+             color: #666; margin-top: .5rem; }
+  #prog { color: #888; font-size: .9rem; }
+  #bar { height: 5px; background: #e5e5e5; border-radius: 3px; margin-top: .4rem; }
+  #fill { height: 100%; width: 0; background: #4a7dbd; border-radius: 3px; }
+  input[type=text] { font-size: 1rem; padding: .5rem; width: 100%; box-sizing: border-box;
+                     border: 1px solid #bbb; border-radius: 6px; margin: .75rem 0; }
+  .go { font-size: 1rem; padding: .6rem 1.4rem; border: none; border-radius: 8px;
+        background: #4a7dbd; color: #fff; cursor: pointer; }
+  .note { font-size: .9rem; color: #555; }
+  code { background: #f0f0f0; padding: .1em .35em; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="card">
+
+<div id="intro" class="screen active">
+  <h1>Word meaning ratings</h1>
+  <p>You will see 116 short sentences, each with one <b>highlighted</b> word.
+  Rate how concrete or abstract the <em>meaning of the highlighted word</em> is,
+  as it is used in that sentence:</p>
+  <p><b>1 = highly concrete</b> &mdash; something you can see, touch, hear, or
+  physically act on.<br>
+  <b>7 = highly abstract</b> &mdash; an idea, quality, or state with no direct
+  sensory referent.</p>
+  <p>Use the buttons or the number keys 1&ndash;7. Go with your first
+  impression; there are no right answers. The task takes about 15 minutes.</p>
+  <label for="pid">Your Prolific ID:</label>
+  <input type="text" id="pid" autocomplete="off">
+  <button class="go" onclick="start()">Begin</button>
+</div>
+
+<div id="task" class="screen">
+  <div id="prog"></div>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="sent"></div>
+  <div class="btns" id="btns"></div>
+  <div class="anchors"><span>1 = highly concrete</span><span>7 = highly abstract</span></div>
+</div>
+
+<div id="done" class="screen">
+  <h1>Thank you!</h1>
+  <p id="status" class="note"></p>
+  <p><a id="dl" download>Download your responses (CSV)</a> and keep the file
+  until the study closes, in case of any submission problem.</p>
+  <p id="codebox" style="display:none">Your completion code:
+  <code id="code"></code></p>
+</div>
+
+</div>
+<script>
+const ITEMS = [{"item": 1, "sentence": "They argued about the [legitimacy] of the ruling."}, {"item": 2, "sentence": "She [broke] her promise within a week."}, {"item": 3, "sentence": "The judge [weighed] the competing claims."}, {"item": 4, "sentence": "Morale in the office was [low] all winter."}, {"item": 5, "sentence": "The pond [froze] solid by December."}, {"item": 6, "sentence": "Trout hovered in the cold [stream]."}, {"item": 7, "sentence": "She had a [bright] future in medicine."}, {"item": 8, "sentence": "She gave him a [cold] reply."}, {"item": 9, "sentence": "A sparrow landed on the swaying [branch]."}, {"item": 10, "sentence": "The senator took a [soft] stance on tariffs."}, {"item": 11, "sentence": "The lawyer built a [solid] argument."}, {"item": 12, "sentence": "The skiff [sank] in the squall."}, {"item": 13, "sentence": "Trucks rumbled across the steel [bridge]."}, {"item": 14, "sentence": "The essay examined the [futility] of the siege."}, {"item": 15, "sentence": "The [ladle] hung beside the stove."}, {"item": 16, "sentence": "She painted the front [door] red."}, {"item": 17, "sentence": "A [wave] of nostalgia swept the crowd."}, {"item": 18, "sentence": "The oak cast a long [shadow] on the lawn."}, {"item": 19, "sentence": "The [dull] blade tore the bread."}, {"item": 20, "sentence": "They [pushed] the stalled car off the road."}, {"item": 21, "sentence": "The divorce turned [bitter] within weeks."}, {"item": 22, "sentence": "The toast [burned] under the broiler."}, {"item": 23, "sentence": "The rumor planted a [seed] of doubt."}, {"item": 24, "sentence": "The [current] dragged the canoe downstream."}, {"item": 25, "sentence": "His claim [stretched] the truth."}, {"item": 26, "sentence": "The party [pulled] its support from the bill."}, {"item": 27, "sentence": "Gravel crunched on the mountain [road]."}, {"item": 28, "sentence": "His humor was [dry] and unsparing."}, {"item": 29, "sentence": "The lawyer [planted] doubt in the jury."}, {"item": 30, "sentence": "The evidence against her was [thin]."}, {"item": 31, "sentence": "The candle [flame] guttered in the draft."}, {"item": 32, "sentence": "The ruling was an [echo] of older prejudice."}, {"item": 33, "sentence": "They stumbled down a [dark] hallway."}, {"item": 34, "sentence": "Donations [flowed] after the appeal."}, {"item": 35, "sentence": "The milk smelled [sour] by morning."}, {"item": 36, "sentence": "He [chewed] on the offer overnight."}, {"item": 37, "sentence": "The hammer [struck] the chisel squarely."}, {"item": 38, "sentence": "The startup [absorbed] heavy losses."}, {"item": 39, "sentence": "Her theory rests on a bold [assumption]."}, {"item": 40, "sentence": "Her assessment was [blunt] but fair."}, {"item": 41, "sentence": "The photo sat in a walnut [frame]."}, {"item": 42, "sentence": "The historian reads the war through the [lens] of economics."}, {"item": 43, "sentence": "The tiles were [slippery] after the rain."}, {"item": 44, "sentence": "The election was a [mirror] of the nation's fears."}, {"item": 45, "sentence": "The children splashed in the [shallow] end."}, {"item": 46, "sentence": "New treatments appeared on the [horizon]."}, {"item": 47, "sentence": "Reporters [dug] into the senator's finances."}, {"item": 48, "sentence": "The eagle circled the [high] cliffs."}, {"item": 49, "sentence": "The porters [carried] crates up the gangway."}, {"item": 50, "sentence": "She chose an unusual [path] to power."}, {"item": 51, "sentence": "She felt the [weight] of the decision."}, {"item": 52, "sentence": "He [bent] the wire into a hook."}, {"item": 53, "sentence": "He swept the [sawdust] off the bench."}, {"item": 54, "sentence": "The anchor hung from a rusted [chain]."}, {"item": 55, "sentence": "The chair [steered] the meeting toward a vote."}, {"item": 56, "sentence": "The mango was [sweet] and dripping."}, {"item": 57, "sentence": "A spider spun its [web] in the doorway."}, {"item": 58, "sentence": "They sat by the [warm] stove."}, {"item": 59, "sentence": "The law grants [broad] powers to inspectors."}, {"item": 60, "sentence": "The crew [harvested] wheat before the rain."}, {"item": 61, "sentence": "A [thread] of irony runs through the memoir."}, {"item": 62, "sentence": "Objections [rose] from every faction."}, {"item": 63, "sentence": "He sanded the [rough] plank."}, {"item": 64, "sentence": "She [swallowed] the pill with water."}, {"item": 65, "sentence": "The gymnast kept her [balance] on the beam."}, {"item": 66, "sentence": "Prices [climbed] throughout the shortage."}, {"item": 67, "sentence": "The pig dug up a gnarled [root]."}, {"item": 68, "sentence": "The insult was the [spark] for the riot."}, {"item": 69, "sentence": "The board [floated] a merger proposal."}, {"item": 70, "sentence": "He [runs] along the canal every morning."}, {"item": 71, "sentence": "She climbed the corporate [ladder] quickly."}, {"item": 72, "sentence": "Her resistance [melted] at his apology."}, {"item": 73, "sentence": "Now I [see] why the plan failed."}, {"item": 74, "sentence": "The clown [juggled] five oranges."}, {"item": 75, "sentence": "The union negotiated a [floor] for wages."}, {"item": 76, "sentence": "The investors were [cool] to the proposal."}, {"item": 77, "sentence": "The hiker checked her [compass] at the fork."}, {"item": 78, "sentence": "The potter [spun] the wheel with one foot."}, {"item": 79, "sentence": "Patience is the [key] to teaching."}, {"item": 80, "sentence": "She wrapped the [fragile] vase in cloth."}, {"item": 81, "sentence": "The committee debated the notion of [fairness]."}, {"item": 82, "sentence": "She packed a [light] suitcase for the trip."}, {"item": 83, "sentence": "She [grasped] the rope with both hands."}, {"item": 84, "sentence": "Ripe apples [fell] into the wet grass."}, {"item": 85, "sentence": "The novel deals with [heavy] themes."}, {"item": 86, "sentence": "She [shouldered] the blame for the collapse."}, {"item": 87, "sentence": "He hit a [wall] in the negotiations."}, {"item": 88, "sentence": "They fished in the [clear] water."}, {"item": 89, "sentence": "She [cut] the melon into wedges."}, {"item": 90, "sentence": "They hiked across the [flat] plain."}, {"item": 91, "sentence": "She works in the [field] of epidemiology."}, {"item": 92, "sentence": "The pilot [navigated] the shoals at low tide."}, {"item": 93, "sentence": "The raft [drifted] toward the reeds."}, {"item": 94, "sentence": "The committee faced a [hard] decision."}, {"item": 95, "sentence": "They [built] a cabin from salvaged timber."}, {"item": 96, "sentence": "Paint peeled from the kitchen [ceiling]."}, {"item": 97, "sentence": "The crew winched the [anchor] aboard."}, {"item": 98, "sentence": "The divers explored the [deep] trench."}, {"item": 99, "sentence": "They opened a [channel] for negotiations."}, {"item": 100, "sentence": "The handover was [smooth] despite the deadline."}, {"item": 101, "sentence": "The inheritance raised a [sticky] question."}, {"item": 102, "sentence": "The eulogy [touched] everyone present."}, {"item": 103, "sentence": "Trust is the [foundation] of any alliance."}, {"item": 104, "sentence": "The shovel [leaned] against the shed."}, {"item": 105, "sentence": "The verdict raised a [storm] of protest."}, {"item": 106, "sentence": "The bottom [step] creaked underfoot."}, {"item": 107, "sentence": "A [tractor] idled outside the barn."}, {"item": 108, "sentence": "He rinsed the coffee [filter]."}, {"item": 109, "sentence": "The owl nested in a [hollow] trunk."}, {"item": 110, "sentence": "The [court] dismissed the appeal."}, {"item": 111, "sentence": "She has a [sharp] mind for numbers."}, {"item": 112, "sentence": "Snakes [digest] their prey slowly."}, {"item": 113, "sentence": "The author [wove] grief into the comedy."}, {"item": 114, "sentence": "She dropped a [pebble] into the well."}, {"item": 115, "sentence": "She [held] a controversial opinion."}, {"item": 116, "sentence": "They squeezed through a [narrow] alley."}];
+const FORM = "B";
+const SUBMIT_URL = "";       // optional: endpoint that accepts a JSON POST
+const COMPLETION_CODE = "";  // shown at the end if set
+
+let idx = 0, t0 = 0, pid = "";
+const rows = [];
+
+const btns = document.getElementById("btns");
+for (let v = 1; v <= 7; v++) {
+  const b = document.createElement("button");
+  b.textContent = v;
+  b.onclick = () => rate(v);
+  btns.appendChild(b);
+}
+document.addEventListener("keydown", e => {
+  if (!document.getElementById("task").classList.contains("active")) return;
+  const v = parseInt(e.key, 10);
+  if (v >= 1 && v <= 7) rate(v);
+});
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function esc(s) {
+  const d = document.createElement("div");
+  d.textContent = s;
+  return d.innerHTML;
+}
+function start() {
+  pid = document.getElementById("pid").value.trim();
+  if (!pid) { alert("Please enter your Prolific ID."); return; }
+  show("task");
+  render();
+}
+function render() {
+  document.getElementById("prog").textContent = (idx + 1) + " / " + ITEMS.length;
+  document.getElementById("fill").style.width = (100 * idx / ITEMS.length) + "%";
+  document.getElementById("sent").innerHTML =
+    esc(ITEMS[idx].sentence).replace(/\[([^\]]+)\]/, "<b>$1</b>");
+  t0 = performance.now();
+}
+function rate(v) {
+  rows.push([ITEMS[idx].item, v, Math.round(performance.now() - t0)]);
+  idx++;
+  if (idx < ITEMS.length) render(); else finish();
+}
+function toCsv() {
+  const lines = ["participant,form,item,rating,rt_ms"];
+  for (const [item, rating, rt] of rows)
+    lines.push([pid, FORM, item, rating, rt].join(","));
+  return lines.join("\n") + "\n";
+}
+function finish() {
+  show("done");
+  const blob = new Blob([toCsv()], { type: "text/csv" });
+  const dl = document.getElementById("dl");
+  dl.href = URL.createObjectURL(blob);
+  dl.download = "ratings_" + FORM + "_" + pid + ".csv";
+  if (COMPLETION_CODE) {
+    document.getElementById("codebox").style.display = "block";
+    document.getElementById("code").textContent = COMPLETION_CODE;
+  }
+  const status = document.getElementById("status");
+  if (!SUBMIT_URL) {
+    status.textContent = "Your responses are ready below.";
+    return;
+  }
+  status.textContent = "Submitting your responses\u2026";
+  fetch(SUBMIT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ participant: pid, form: FORM, rows: rows }),
+  }).then(r => {
+    status.textContent = r.ok ? "Responses submitted successfully."
+      : "Automatic submission failed \u2014 please download the CSV below and "
+        + "return it via the study page.";
+  }).catch(() => {
+    status.textContent = "Automatic submission failed \u2014 please download "
+      + "the CSV below and return it via the study page.";
+  });
+}
+</script>
+</body>
+</html>

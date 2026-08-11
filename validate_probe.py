@@ -54,26 +54,28 @@ def binom_p_one_sided(k, n):
     return sum(math.comb(n, i) for i in range(k, n + 1)) / 2 ** n
 
 
-def write_sheet(pairs, out_path):
-    """Emit a blinded, shuffled human-rating sheet plus a separate answer key.
+# Attention checks embedded in both counterbalanced forms. Unambiguous by
+# design; preregistered exclusion rule: catch_concrete must be rated <= 3
+# and catch_abstract >= 5 on the 1-7 scale.
+CATCH_ITEMS = [
+    ("pebble", "catch_concrete", "She dropped a [pebble] into the well."),
+    ("sawdust", "catch_concrete", "He swept the [sawdust] off the bench."),
+    ("ladle", "catch_concrete", "The [ladle] hung beside the stove."),
+    ("tractor", "catch_concrete", "A [tractor] idled outside the barn."),
+    ("fairness", "catch_abstract", "The committee debated the notion of [fairness]."),
+    ("assumption", "catch_abstract", "Her theory rests on a bold [assumption]."),
+    ("futility", "catch_abstract", "The essay examined the [futility] of the siege."),
+    ("legitimacy", "catch_abstract", "They argued about the [legitimacy] of the ruling."),
+]
 
-    One row per sentence (2 per pair), fixed-seed shuffle, target word
-    bracketed. The sheet carries no pair grouping or sense labels; those
-    live only in the key file, which raters must not see.
-    """
+
+def mark_target(sentence, word):
+    return re.sub(rf"\b{re.escape(word)}\b", lambda m: f"[{m.group(0)}]",
+                  sentence, count=1, flags=re.IGNORECASE)
+
+
+def write_csvs(items, out_path):
     import csv
-    import random
-
-    items = []
-    for p in pairs:
-        for sense in ("concrete", "abstract"):
-            marked = re.sub(rf"\b{re.escape(p['word'])}\b",
-                            lambda m: f"[{m.group(0)}]",
-                            p[sense], count=1, flags=re.IGNORECASE)
-            items.append({"word": p["word"], "pos": p["pos"],
-                          "sense": sense, "sentence": marked})
-    random.Random(0).shuffle(items)
-
     key_path = re.sub(r"\.csv$", "", out_path) + "_key.csv"
     with open(out_path, "w", newline="") as f:
         w = csv.writer(f)
@@ -85,8 +87,48 @@ def write_sheet(pairs, out_path):
         w.writerow(["item", "word", "pos", "sense"])
         for i, it in enumerate(items, 1):
             w.writerow([i, it["word"], it["pos"], it["sense"]])
-
     print(f"wrote {len(items)} items to {out_path} (key: {key_path})")
+
+
+def write_forms(pairs, base_path):
+    """Two counterbalanced forms: each rater sees one member of every pair.
+
+    Form A gets the concrete member of even-index pairs and the abstract
+    member of odd-index pairs; Form B the complement. Both forms carry the
+    same catch items. The within-pair contrast is purely between-subjects.
+    """
+    import random
+    base = re.sub(r"\.csv$", "", base_path)
+    for form, seed in (("A", 0), ("B", 1)):
+        items = []
+        for i, p in enumerate(pairs):
+            concrete_in_a = i % 2 == 0
+            sense = ("concrete" if concrete_in_a == (form == "A") else "abstract")
+            items.append({"word": p["word"], "pos": p["pos"], "sense": sense,
+                          "sentence": mark_target(p[sense], p["word"])})
+        for word, sense, sentence in CATCH_ITEMS:
+            items.append({"word": word, "pos": "catch", "sense": sense,
+                          "sentence": sentence})
+        random.Random(seed).shuffle(items)
+        write_csvs(items, f"{base}_{form}.csv")
+
+
+def write_sheet(pairs, out_path):
+    """Emit a blinded, shuffled human-rating sheet plus a separate answer key.
+
+    One row per sentence (2 per pair), fixed-seed shuffle, target word
+    bracketed. The sheet carries no pair grouping or sense labels; those
+    live only in the key file, which raters must not see.
+    """
+    import random
+
+    items = []
+    for p in pairs:
+        for sense in ("concrete", "abstract"):
+            items.append({"word": p["word"], "pos": p["pos"], "sense": sense,
+                          "sentence": mark_target(p[sense], p["word"])})
+    random.Random(0).shuffle(items)
+    write_csvs(items, out_path)
     print("\nRater instructions:")
     print("  Rate the meaning of the [bracketed] word as used in the sentence,")
     print("  on a 1-7 scale: 1 = highly concrete (something you can see, touch,")
@@ -102,11 +144,18 @@ def main():
     ap.add_argument("--sheet", metavar="OUT.csv",
                     help="write a blinded human-rating sheet (+ answer key) "
                          "and exit instead of running the probe")
+    ap.add_argument("--forms", action="store_true",
+                    help="with --sheet: write two counterbalanced forms "
+                         "(OUT_A.csv, OUT_B.csv) with catch items, so each "
+                         "rater sees one member of every pair")
     args = ap.parse_args()
 
     pairs = load_pairs(args.pairs)
     if args.sheet:
-        write_sheet(pairs, args.sheet)
+        if args.forms:
+            write_forms(pairs, args.sheet)
+        else:
+            write_sheet(pairs, args.sheet)
         return
     by_pos = {}
     for p in pairs:
